@@ -17,11 +17,6 @@
     <section class="box">
         <div class="left">
             <?php
-                $colors = array("#FFFFFF", "#000000", "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#C0C0C0", 
-                "#808080", "#800000", "#808000", "#008000", "#800080", "#008080", "#000080", "#FFA500", "#A52A2A", "#800080", 
-                "#FFC0CB", "#FFD700", "#ADFF2F", "#F0E68C", "#E6E6FA", "#F08080", "#D3D3D3", "#FA8072", "#20B2AA", "#87CEEB", 
-                "#778899", "#B0C4DE", "#4682B4", "#D2691E", "#9ACD32", "#00CED1", "#FF69B4", "#CD5C5C", "#4B0082", "#7B68EE");
-
                 $alphabet = range("A", "T");
 
                 if (isset($_GET['m']) && isset($_GET['n'])) {
@@ -41,13 +36,22 @@
                     return $num;
                 }
 
+                $minvalue = 80;
+                $total = intval($m_value) * intval($n_value);
+                $shades = array();
+                for ($i = 0; $i < $total; $i++) {
+                    $greyValue = intval($minvalue + (255 - $minvalue) * ($i / ($total - 1)));
+                    $hexValue = sprintf("#%02X%02X%02X", $greyValue, $greyValue, $greyValue);
+                    $shades[] = "$hexValue";
+                }
+
                 echo "<table>";
                 for ($i = 0; $i < 20; $i++) {
                     echo "<tr>";
                     for ($j = 0; $j < 20; $j++) {
                         $num = fxy($j, $i, $m_value, $n_value);
                         $id = "left_" . $alphabet[$i] . $alphabet[$j];
-                        echo "<td id=\"$id\">";
+                        echo "<td id=\"$id\" style=\"background-color:" . $shades[$num[2]] . "\">";
                         echo $num[2];
                         echo "</td>";
                     }
@@ -64,7 +68,7 @@
                     for ($j = 0; $j < 20; $j++) {
                         $num = fxy($j, $i, $m_value, $n_value);
                         $id = "right_" . $alphabet[$i] . $alphabet[$j];
-                        echo "<td class=\"small\" id=\"$id\">";
+                        echo "<td class=\"small\" id=\"$id\" style=\"background-color:" . $shades[$num[2]] . "\">";
                         echo $num[0] . "+" . $num[1];
                         echo "</td>";
                     }
@@ -81,30 +85,34 @@
                             const corrRightCellId = leftCell.id.replace("left_", "right_");
                             const corrRightCell = document.getElementById(corrRightCellId);
 
-                            leftCell.addEventListener('mouseover', () => {
+                            leftCell.addEventListener('mousedown', () => {
                                 leftCell.style.backgroundColor = 'yellow';
                                 corrRightCell.style.backgroundColor = 'yellow';
                             });
 
+                            /*
                             leftCell.addEventListener('mouseout', () => {
                                 leftCell.style.backgroundColor = '';
                                 corrRightCell.style.backgroundColor = '';
                             });
+                            */
                         });
 
                         rightCells.forEach(rightCell => {
                             const corrLeftCellId = rightCell.id.replace("right_", "left_");
                             const corrLeftCell = document.getElementById(corrLeftCellId);
 
-                            rightCell.addEventListener('mouseover', () => {
+                            rightCell.addEventListener('mousedown', () => {
                                 rightCell.style.backgroundColor = 'yellow';
                                 corrLeftCell.style.backgroundColor = 'yellow';
                             });
 
+                            /*
                             rightCell.addEventListener('mouseout', () => {
                                 rightCell.style.backgroundColor = '';
                                 corrLeftCell.style.backgroundColor = '';
                             });
+                            */
                         });
                     });
                 </script>
